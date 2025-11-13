@@ -71,80 +71,42 @@ def get_images_for_date(date_str):
 
 def resize_image_to_fit(image, scale, width, height, background_color=None, background=None):
     """
-    Изменяет размер изображения с сохранением пропорций и добавляет фон.
-    
-    Args:
-        image (PIL.Image): Исходное изображение
-        scale (int): Коэффициент масштабирования
-        width (int): Ширина получаемого видео
-        height (int): Высота получаемого видео
-        background_color (tuple): Цвет фона
-        background (PIL.Image): Изображение фона, если имеется
-        
-    Returns:
-        tuple: (PIL.Image, (x, y, new_width, new_height)) — изображение и позиция/размер вставленного контента
+    Масштабирует изображение с сохранением пропорций и вставляет на фон.
     """
 
-    # Если исходный размер уже совпадает с целевым и размер не отличен от установленного, возвращаем без пересэмплинга
     img_width, img_height = image.size
 
-    if img_width == width and img_height == height and background == None:
-        if image.mode == 'RGBA':
-            composed = Image.new('RGB', (width, height), background_color)
-            composed.paste(image, (0, 0), image)
-            return composed, (0, 0, width, height)
-        return image.convert('RGB'), (0, 0, width, height)
-    
+    # Масштабирование
     if scale != 1:
-        # Новые размеры с сохранением пропорций
         new_width = int(img_width * scale)
         new_height = int(img_height * scale)
-
-        # Выбираем метод ресайза: для кратного масштабирования используем NEAREST (пиксель-перфект)
         down_int = (img_width % width == 0) and (img_height % height == 0)
         up_int = (width % img_width == 0) and (height % img_height == 0)
         resample = Image.NEAREST if (down_int or up_int) else Image.Resampling.LANCZOS
-        
-        # Изменяем размер изображения
         resized_image = image.resize((new_width, new_height), resample)
-
-    if background != None:
-        # Скейлим фон
-        img_width, img_height = background.size
-
-        if img_width == width and img_height == height:
-            if image.mode == 'RGBA':
-                background.paste(image, (0, 0), image)
-                return background, (0, 0, width, height)
-            return background.convert('RGB'), (0, 0, width, height)
-        
-        if scale != 1:
-            # Новые размеры с сохранением пропорций
-            new_width = int(img_width * scale)
-            new_height = int(img_height * scale)
-    
-            # Выбираем метод ресайза: для кратного масштабирования используем NEAREST (пиксель-перфект)
-            down_int = (img_width % width == 0) and (img_height % height == 0)
-            up_int = (width % img_width == 0) and (height % img_height == 0)
-            resample = Image.NEAREST if (down_int or up_int) else Image.Resampling.LANCZOS
-            
-            # Изменяем размер изображения
-            result = background.resize((new_width, new_height), resample)
     else:
-        # Создаем новое изображение с белым фоном
-        result = Image.new('RGB', (width, height), background_color)
-    
-    # Вычисляем позицию для центрирования
+        resized_image = image
+        new_width, new_height = img_width, img_height
+
+    # Создаём или масштабируем фон
+    if background is not None:
+        bg = background.convert('RGB')
+        if bg.size != (width, height):
+            bg = bg.resize((width, height), Image.Resampling.LANCZOS)
+    else:
+        bg = Image.new('RGB', (width, height), background_color)
+
+    # Центрирование изображения
     x = (width - new_width) // 2
     y = (height - new_height) // 2
-    
-    # Вставляем изображение по центру
+
+    # Накладываем изображение
     if resized_image.mode == 'RGBA':
-        result.paste(resized_image, (x, y), resized_image)
+        bg.paste(resized_image, (x, y), resized_image)
     else:
-        result.paste(resized_image, (x, y))
-    
-    return result, (x, y, new_width, new_height)
+        bg.paste(resized_image, (x, y))
+
+    return bg, (x, y, new_width, new_height)
 
 def add_timestamp_overlay(image, timestamp, font_size=36):
     """
