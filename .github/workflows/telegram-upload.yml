@@ -241,7 +241,7 @@ jobs:
           
           if [ "${{ steps.upload-type.outputs.type }}" = "weekly" ]; then
             # Сообщение для недельного таймлапса с датами
-            MESSAGE=$(echo -e "📅 Недельный таймлапс с ${{ steps.format-dates.outputs.formatted_start }} по ${{ steps.format-dates.outputs.formatted_end }}\n\n[🎬 Репозиторий с автоматизироваными таймлапсами](https://github.com/niklinque/wplace-tomsk-timelapse/)\n[📸 Репозиторий с дампами](https://github.com/niklinque/wplace-tomsk/)")
+            MESSAGE=$(echo -e "📅 Недельный таймлапс с ${{ steps.format-dates.outputs.formatted_start }} по ${{ steps.format-dates.outputs.formatted_end }}\n\n[🎬 Репозиторий с автоматизироваными таймлапсами](https://github.com/ugliestie/wplace-tomsk-timelapse/)\n[📸 Репозиторий с дампами](https://github.com/ugliestie/wplace-tomsk/)")
             
             echo "Uploading weekly timelapse: $MESSAGE"
             
@@ -257,7 +257,7 @@ jobs:
                  --retry-delay 30
           else
             # Сообщение для ежедневного таймлапса
-            MESSAGE=$(echo -e "🤖 Ежедневный таймлапс за ${{ steps.format-dates.outputs.formatted_daily }}\n\n[🎬 Репозиторий с автоматизироваными таймлапсами](https://github.com/niklinque/wplace-tomsk-timelapse/)\n[📸 Репозиторий с дампами](https://github.com/niklinque/wplace-tomsk/)")
+            MESSAGE=$(echo -e "🤖 Ежедневный таймлапс за ${{ steps.format-dates.outputs.formatted_daily }}\n\n[🎬 Репозиторий с автоматизироваными таймлапсами](https://github.com/ugliestie/wplace-tomsk-timelapse/)\n[📸 Репозиторий с дампами](https://github.com/ugliestie/wplace-tomsk/)")
             
             echo "Uploading daily timelapse: $MESSAGE"
             
