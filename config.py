@@ -8,4 +8,4 @@ UPLOAD_TO_TELEGRAM = True
 TIMEZONE = "Asia/Tomsk"
 
 # --- ИСТОЧНИК ДАМПОВ ---
-SOURCE_REPO = "https://github.com/niklinque/wplace-tomsk"
+SOURCE_REPO = "https://github.com/ugliestie/wplace-tomsk"
